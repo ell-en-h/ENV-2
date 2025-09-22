@@ -1,16 +1,21 @@
-CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Iinclude
-SRC = src/main.cpp src/ComplexNumber.cpp src/Sort.cpp
-OBJ = $(SRC:.cpp=.o)
-TARGET = env2
+all: env2
 
-all: $(TARGET)
+env2: main.o ComplexNumber.o Sort.o
+	g++ main.o ComplexNumber.o Sort.o -o env2
 
-$(TARGET): $(OBJ)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+main.o: src/main.cpp include/ComplexNumber.h include/Sort.h
+	g++ -c src/main.cpp -Iinclude -o main.o
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+ComplexNumber.o: src/ComplexNumber.cpp include/ComplexNumber.h
+	g++ -c src/ComplexNumber.cpp -Iinclude -o ComplexNumber.o
+
+Sort.o: src/Sort.cpp include/Sort.h include/ComplexNumber.h
+	g++ -c src/Sort.cpp -Iinclude -o Sort.o
+
+run: env2
+	./env2
 
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f *.o env2
+
+.PHONY: all clean run
